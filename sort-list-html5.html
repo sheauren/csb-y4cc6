@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Drag Element</title>
+    <style>
+        .sortablelist {
+            background-color: aqua;
+        }
+
+        .sortablelist li {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            transition: all .2s linear;
+            border: 1px solid;
+            width:100px;
+
+        }
+
+        .placeholder-hover {
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+            transition: all .2s linear;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="sortablelist" id='sortablelist'>
+        <li id='1' class='item'>1111111111
+        </li>
+        <li id='2' class='item'>2222222222
+
+        </li>
+        <li id='3' class='item'>3333333333
+
+        </li>
+        <li id='4' class='item'>4444444444
+
+        </li>
+        <li id='5' class='item'>5555555555
+
+        </li>
+        <li id='6' class='item'>6666666666
+
+        </li>
+        <li id='7' class='item'>7777777777
+
+        </li>
+        <li id='8' class='item'>8888888888
+
+        </li>
+        <li id='9' class='item'>9999999999
+
+        </li>
+    </ul>
+    <script type="text/javascript">
+        isDrag = false
+        function drop(e) {
+            e.preventDefault();
+            var data = e.dataTransfer.getData("text");
+            li = e.target
+            newitem = document.getElementById(data)
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            //console.log('y',y,'height/2',rect.height/2)
+            if (y> (rect.height/2)){
+                //console.log('append drop')
+                li.parentNode.insertBefore(newitem, li.nextElementSibling);       
+            }
+            else{
+                //console.log('insertBefore drop')
+                li.parentNode.insertBefore(newitem, li);
+            }
+            if (e.target.classList.contains('placeholder-hover')) {
+                e.target.classList.remove('placeholder-hover');
+            }         
+        }
+        function dragover(e) {
+            e.preventDefault();
+            if (e.target.classList.contains('item')) {
+                if (!e.target.classList.contains('placeholder-hover')) {
+                    e.target.classList.add('placeholder-hover');
+                }
+                return true
+            }
+            return false
+        }
+        function dragleave(e) {
+            if (e.target.classList.contains('placeholder-hover')) {
+                e.target.classList.remove('placeholder-hover');
+            }
+        }
+        function dragend(e) {
+            isDrag = false;
+        }
+        function dragstart(e) {
+            isDrag = true;
+            var crt = document.elementFromPoint(e.pageX, e.pageY);
+            e.dataTransfer.setData("text/plain", crt.id);
+            e.dataTransfer.setDragImage(crt, 0, 0);
+        }
+        Array.prototype.forEach.call(document.getElementById('sortablelist').getElementsByClassName('item'), (el, index) => {
+            el.addEventListener('dragstart', dragstart, false)
+            el.setAttribute('draggable', true);
+            el.addEventListener('drop', drop, false)
+            el.addEventListener('dragover', dragover, false)
+            el.addEventListener('dragend', dragend)
+            el.addEventListener('dragleave', dragleave)
+        })
+    </script>
+</body>
+
+</html>

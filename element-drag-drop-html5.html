@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Drag Element</title>
+    <style>
+      .dragable {
+        background-color: blue;
+        color: white;
+        display: inline-block;
+        width: 100px;
+        padding: 5px;
+        text-align: center;
+      }
+      .dragable .dragregion {
+        cursor: move;
+        display: inline-block;
+        background-color: aqua;
+        width: 30px;
+        border: 1px solid;
+      }
+      .dropable {
+        background-color: azure;
+        width: 500px;
+        height: 500px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="b"
+      class="dropable"
+      ondrop="drop(event)"
+      ondragover="allowDrop(event)"
+    >
+      Dropable
+    </div>
+    <div id="a" class="dragable">
+      <div ondragstart="dragstart(event)" draggable="true" class="dragregion">
+        +
+      </div>
+      Dragable
+    </div>
+    <script type="text/javascript">
+      function drop(e) {
+        e.preventDefault();
+        var data = e.dataTransfer.getData("text");
+        e.target.appendChild(document.getElementById(data));
+      }
+      function allowDrop(e) {
+        e.preventDefault();
+      }
+      function dragstart(e) {
+        crt = e.target.closest(".dragable");
+        e.dataTransfer.setData("text/plain", crt.id);
+        e.dataTransfer.setDragImage(crt, 0, 0);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Drag Element</title>
+    <style>
+        .dragable {
+            cursor: move;
+            background-color: blue;
+            color: white;
+            display: inline-block;
+            width: 100px;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dragable">Dragable</div>
+    <script type="text/javascript">
+        var draggingEl = null;
+        var isDraggingStarted = false;
+        var draggingStartX = null;
+        var draggingStartY = null;
+
+        function dragMoveEventHandler(e) {
+            console.log("move");
+            if (!isDraggingStarted) {
+                isDraggingStarted = true;
+            }
+            draggingEl.style.position = "absolute";
+            draggingEl.style.left = `${e.pageX - draggingStartX}px`;
+            draggingEl.style.top = `${e.pageY - draggingStartY}px`;
+        }
+        function dragUpEventHandler(e) {
+            console.log("end darg");
+            isDraggingStarted = false;
+            document.removeEventListener("mousemove", dragMoveEventHandler);
+            document.removeEventListener("mouseup", dragUpEventHandler);
+        }
+        function dragDownEventHandeler(e) {
+            console.log("start drag");
+            draggingEl = e.target;
+            // Calculate the mouse position
+            const rect = draggingEl.getBoundingClientRect();
+            draggingStartX = e.pageX - rect.left;
+            draggingStartY = e.pageY - rect.top;
+            // Attach the listeners to `document`
+            document.addEventListener("mousemove", dragMoveEventHandler);
+            document.addEventListener("mouseup", dragUpEventHandler);
+        }
+
+        dragable_list = document.getElementsByClassName("dragable");
+        Array.prototype.forEach.call(dragable_list, function (el,index) {
+            console.log("register dragable", index);
+            el.addEventListener("mousedown", dragDownEventHandeler);
+        });
+    </script>
+</body>
+
+</html>
